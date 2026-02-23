@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ltc leaks</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0c0c0c;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: #111;
+            border: 1px solid #222;
+        }
+
+        .header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #222;
+            background: #0f0f0f;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #fff;
+            font-weight: 500;
+            font-size: 22px;
+        }
+
+        .header span {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #222;
+            background: #0f0f0f;
+        }
+
+        .tab {
+            padding: 14px 28px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .tab.active {
+            color: #fff;
+            background: #1a1a1a;
+        }
+
+        .panel {
+            display: none;
+            padding: 24px;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        /* login */
+        .login-box {
+            max-width: 360px;
+            margin: 60px auto;
+            background: #111;
+            border: 1px solid #222;
+            padding: 32px;
+        }
+
+        .login-box h2 {
+            color: #fff;
+            font-weight: 400;
+            font-size: 18px;
+            margin-bottom: 24px;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .field input, .field textarea {
+            width: 100%;
+            background: #0a0a0a;
+            border: 1px solid #222;
+            padding: 12px 14px;
+            color: #fff;
+            font-size: 13px;
+        }
+
+        .field input:focus {
+            outline: none;
+            border-color: #444;
+        }
+
+        .field label {
+            display: block;
+            color: #888;
+            font-size: 11px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        button {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 12px 20px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #222;
+        }
+
+        .primary {
+            background: #fff;
+            color: #000;
+            border: none;
+        }
+
+        .primary:hover {
+            background: #e5e5e5;
+        }
+
+        /* user panel */
+        .user-header {
+            background: #111;
+            border: 1px solid #222;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .key-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .key-info span {
+            background: #0a0a0a;
+            padding: 6px 14px;
+            border: 1px solid #222;
+            color: #fff;
+        }
+
+        .license-status {
+            font-size: 12px;
+            padding: 6px 14px;
+            border: 1px solid;
+        }
+
+        .license-status.active {
+            border-color: #2a4a2a;
+            color: #8aff8a;
+        }
+
+        .license-status.expiring {
+            border-color: #4a4a2a;
+            color: #ffff8a;
+        }
+
+        .license-status.expired {
+            border-color: #4a2a2a;
+            color: #ff8a8a;
+        }
+
+        .files-section {
+            background: #111;
+            border: 1px solid #222;
+            padding: 24px;
+        }
+
+        .files-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .files-header h3 {
+            color: #fff;
+            font-weight: 400;
+            font-size: 16px;
+        }
+
+        .search-box {
+            margin-bottom: 24px;
+        }
+
+        .search-box input {
+            width: 100%;
+            background: #0a0a0a;
+            border: 1px solid #222;
+            padding: 12px 16px;
+            color: #fff;
+        }
+
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .file-item {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            padding: 16px;
+        }
+
+        .file-name {
+            color: #fff;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .file-meta {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .file-actions button {
+            flex: 1;
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 24px;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .stats span {
+            color: #fff;
+            margin-left: 6px;
+        }
+
+        /* admin */
+        .admin-section {
+            background: #111;
+            border: 1px solid #222;
+            padding: 24px;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #222;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .box {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            padding: 20px;
+        }
+
+        .box h3 {
+            color: #fff;
+            font-weight: 400;
+            font-size: 15px;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #222;
+        }
+
+        .upload-area {
+            border: 2px dashed #222;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .upload-area:hover {
+            background: #111;
+        }
+
+        .key-list, .admin-files-list {
+            margin-top: 16px;
+        }
+
+        .key-item {
+            background: #111;
+            border: 1px solid #222;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .key-item .small {
+            color: #888;
+            font-size: 11px;
+        }
+
+        .admin-file-item {
+            background: #111;
+            border: 1px solid #222;
+            padding: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .duration-selector {
+            display: flex;
+            gap: 8px;
+            margin: 16px 0;
+            flex-wrap: wrap;
+        }
+
+        .duration-btn {
+            flex: 1;
+            padding: 8px;
+            background: #111;
+            border: 1px solid #222;
+            color: #888;
+            text-align: center;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .duration-btn.active {
+            background: #222;
+            color: #fff;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #111;
+            border: 1px solid #222;
+            padding: 24px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .preview-content {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            padding: 16px;
+            font-family: monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .footer {
+            padding: 16px 24px;
+            border-top: 1px solid #222;
+            background: #0f0f0f;
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .footer a {
+            color: #888;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: #fff;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #111;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ltc leaks</h1>
+            <span>v2 // krvl_keine</span>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('user')">user</button>
+            <button class="tab" onclick="switchTab('admin')">admin</button>
+        </div>
+
+        <!-- modal -->
+        <div class="modal" id="previewModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 style="color:#fff;font-weight:400" id="previewTitle">podgląd</h3>
+                    <button class="modal-close" onclick="closePreview()">✕</button>
+                </div>
+                <div class="preview-content" id="previewContent"></div>
+                <div style="display:flex;gap:12px;margin-top:20px;justify-content:flex-end">
+                    <button class="primary" id="previewDownloadBtn">pobierz</button>
+                    <button onclick="closePreview()">zamknij</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- user panel -->
+        <div id="userPanel" class="panel active">
+            <div id="userLoginPanel">
+                <div class="login-box">
+                    <h2>logowanie</h2>
+                    <div class="field">
+                        <label>klucz</label>
+                        <input type="password" id="userKeyInput" placeholder="np. ADM-IN9">
+                    </div>
+                    <button class="primary" onclick="userLogin()" style="width:100%">zaloguj</button>
+                    <div style="margin-top:20px;text-align:center;color:#666;font-size:11px">
+                        kontakt: krvl_keine (dc)
+                    </div>
+                </div>
+            </div>
+
+            <div id="userFilesPanel" style="display:none">
+                <div class="user-header">
+                    <div class="key-info">
+                        <span>🔑</span>
+                        <span id="userDisplayKey">••••••••</span>
+                    </div>
+                    <div style="display:flex;gap:12px">
+                        <span class="license-status" id="licenseBadge">aktywna</span>
+                        <button onclick="userLogout()">wyloguj</button>
+                    </div>
+                </div>
+
+                <div class="files-section">
+                    <div class="files-header">
+                        <h3>pliki</h3>
+                        <span class="stats">wszystkich: <span id="totalFiles">0</span></span>
+                    </div>
+
+                    <div class="search-box">
+                        <input type="text" id="searchFiles" placeholder="szukaj..." onkeyup="filterFiles()">
+                    </div>
+
+                    <div class="files-grid" id="filesGrid"></div>
+
+                    <div class="stats" style="margin-top:16px">
+                        <div>rozmiar: <span id="totalSize">0 MB</span></div>
+                        <div>aktualizacja: <span id="lastUpdate">-</span></div>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px">
+                    <button onclick="buyOffer('premium')">premium • 50</button>
+                    <button onclick="buyOffer('vip')">vip • 100</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- admin panel -->
+        <div id="adminPanel" class="panel">
+            <div id="adminLoginPanel">
+                <div class="login-box">
+                    <h2>admin</h2>
+                    <div class="field">
+                        <label>hasło</label>
+                        <input type="password" id="adminPassInput">
+                    </div>
+                    <button class="primary" onclick="adminLogin()" style="width:100%">wejdz</button>
+                </div>
+            </div>
+
+            <div id="adminPanelContent" style="display:none">
+                <div class="admin-section">
+                    <div class="admin-header">
+                        <div class="stats">
+                            <div>pliki: <span id="adminFilesCount">0</span></div>
+                            <div>klucze: <span id="adminKeysCount">0</span></div>
+                        </div>
+                        <button onclick="adminLogout()">wyloguj</button>
+                    </div>
+
+                    <div class="grid-2">
+                        <!-- keys -->
+                        <div class="box">
+                            <h3>generator kluczy</h3>
+                            <div class="field">
+                                <input type="text" id="licenseName" placeholder="nazwa">
+                            </div>
+                            
+                            <div class="duration-selector">
+                                <div class="duration-btn active" onclick="selectDuration(7, this)">7d</div>
+                                <div class="duration-btn" onclick="selectDuration(14, this)">14d</div>
+                                <div class="duration-btn" onclick="selectDuration(30, this)">30d</div>
+                                <div class="duration-btn" onclick="selectDuration(90, this)">90d</div>
+                            </div>
+                            
+                            <button onclick="generateLicense()" style="width:100%">generuj</button>
+                            
+                            <div id="generatedKeyDisplay" style="background:#111;border:1px solid #222;padding:12px;margin-top:16px;color:#8aff8a;display:none"></div>
+                            
+                            <div class="key-list" id="keyList"></div>
+                        </div>
+
+                        <!-- upload -->
+                        <div class="box">
+                            <h3>dodaj plik</h3>
+                            <div class="field">
+                                <input type="text" id="fileName" placeholder="nazwa">
+                            </div>
+                            <div class="field">
+                                <textarea id="fileDesc" placeholder="opis" rows="2"></textarea>
+                            </div>
+                            <div class="upload-area" id="adminDropZone" onclick="document.getElementById('adminFileInput').click()">
+                                <p style="color:#666">kliknij lub przeciągnij</p>
+                                <input type="file" id="adminFileInput" style="display:none">
+                            </div>
+                            <div id="adminFileInfo" style="background:#111;border:1px solid #222;padding:12px;margin-top:12px;display:none"></div>
+                            <button onclick="uploadFile()" style="width:100%;margin-top:16px" id="uploadBtn" disabled>dodaj</button>
+                        </div>
+                    </div>
+
+                    <!-- files list -->
+                    <div class="box" style="margin-top:24px">
+                        <h3>wszystkie pliki</h3>
+                        <div class="admin-files-list" id="adminFilesList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>ltc leaks // 2024</div>
+            <div><a href="#" onclick="showContact()">krvl_keine</a></div>
+        </div>
+    </div>
+
+    <script>
+        const BIN_ID = '699b66ea43b1c97be9947e2f';
+        const API_KEY = '$2a$10$RjWg9.uyQvQcCa9ZYTAMhuEuljziWE3FW8Fr462VCzkw3zCjntw1C';
+        const ADMIN_PASSWORD = 'ltcadmin2024';
+        
+        let files = [];
+        let licenses = [];
+        let currentUserKey = null;
+        let currentLicense = null;
+        let isAdminLogged = false;
+        let uploadedFile = null;
+        let selectedDuration = 30;
+
+        loadData();
+        setInterval(loadData, 10000);
+
+        async function loadData() {
+            try {
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': API_KEY }
+                });
+                let data = await res.json();
+                if (data.record) {
+                    files = data.record.files || [];
+                    licenses = data.record.licenses || [];
+                }
+                updateUI();
+                if (currentUserKey) {
+                    checkLicense();
+                    renderFiles();
+                }
+            } catch (e) {}
+        }
+
+        async function saveData() {
+            let data = { files, licenses };
+            try {
+                await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
+                    body: JSON.stringify(data)
+                });
+            } catch (e) {}
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('adminFilesCount').textContent = files.length;
+            document.getElementById('adminKeysCount').textContent = licenses.length;
+            
+            let totalSize = files.reduce((acc, f) => acc + (f.size || 0), 0);
+            document.getElementById('totalSize').textContent = (totalSize / (1024 * 1024)).toFixed(2) + ' MB';
+            document.getElementById('totalFiles').textContent = files.length;
+            
+            if (files.length) {
+                document.getElementById('lastUpdate').textContent = new Date(files[0].date).toLocaleDateString('pl-PL');
+            }
+
+            if (isAdminLogged) {
+                renderKeys();
+                renderAdminFiles();
+            }
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab')[tab === 'user' ? 0 : 1].classList.add('active');
+            document.getElementById(tab === 'user' ? 'userPanel' : 'adminPanel').classList.add('active');
+        }
+
+        // ==================== user ====================
+        function userLogin() {
+            let key = document.getElementById('userKeyInput').value.toUpperCase();
+            if (!key) return alert('wpisz klucz');
+            
+            let valid = licenses.find(l => l.key === key);
+            if (!valid) return alert('zły klucz');
+            
+            let now = new Date();
+            let expiry = new Date(valid.expires);
+            
+            if (now > expiry) return alert('klucz wygasł');
+            
+            currentUserKey = key;
+            currentLicense = valid;
+            
+            document.getElementById('userLoginPanel').style.display = 'none';
+            document.getElementById('userFilesPanel').style.display = 'block';
+            document.getElementById('userDisplayKey').textContent = '•'.repeat(key.length);
+            
+            updateLicenseBadge();
+            renderFiles();
+        }
+
+        function userLogout() {
+            currentUserKey = null;
+            currentLicense = null;
+            document.getElementById('userLoginPanel').style.display = 'block';
+            document.getElementById('userFilesPanel').style.display = 'none';
+        }
+
+        function checkLicense() {
+            if (!currentLicense) return;
+            let now = new Date();
+            let expiry = new Date(currentLicense.expires);
+            if (now > expiry) {
+                alert('klucz wygasł');
+                userLogout();
+            } else {
+                updateLicenseBadge();
+            }
+        }
+
+        function updateLicenseBadge() {
+            let badge = document.getElementById('licenseBadge');
+            let now = new Date();
+            let expiry = new Date(currentLicense.expires);
+            let daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
+            
+            badge.className = 'license-status';
+            if (daysLeft <= 3) {
+                badge.classList.add('expiring');
+                badge.textContent = `wygasa za ${daysLeft} dni`;
+            } else {
+                badge.classList.add('active');
+                badge.textContent = `aktywna (${daysLeft} dni)`;
+            }
+        }
+
+        function filterFiles() {
+            renderFiles();
+        }
+
+        function renderFiles() {
+            let grid = document.getElementById('filesGrid');
+            let search = document.getElementById('searchFiles')?.value.toLowerCase() || '';
+            
+            if (!files.length) {
+                grid.innerHTML = '<div style="color:#666;text-align:center;padding:40px;background:#0a0a0a">brak plików</div>';
+                return;
+            }
+
+            let filtered = files.filter(f => f.name.toLowerCase().includes(search) || (f.desc || '').toLowerCase().includes(search));
+
+            grid.innerHTML = filtered.map(f => {
+                let size = (f.size / 1024).toFixed(2) + ' KB';
+                if (f.size > 1024*1024) size = (f.size / (1024*1024)).toFixed(2) + ' MB';
+                
+                return `
+                    <div class="file-item">
+                        <div class="file-name">${f.name}</div>
+                        <div class="file-meta">${size} • ${new Date(f.date).toLocaleDateString('pl-PL')}</div>
+                        <div class="file-actions">
+                            <button onclick="downloadFile('${f.id}')">pobierz</button>
+                            <button onclick="previewFile('${f.id}')">podgląd</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function downloadFile(id) {
+            let f = files.find(f => f.id === id);
+            if (!f) return;
+            let binary = atob(f.data);
+            let array = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) array[i] = binary.charCodeAt(i);
+            
+            let blob = new Blob([array]);
+            let url = URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = f.name;
+            a.click();
+        }
+
+        function previewFile(id) {
+            let f = files.find(f => f.id === id);
+            if (!f) return;
+            
+            let content = '[podgląd niedostępny]';
+            try {
+                let binary = atob(f.data);
+                content = new TextDecoder('utf-8').decode(new Uint8Array([...binary].map(c => c.charCodeAt(0))));
+                if (content.length > 5000) content = content.substring(0,5000) + '\n\n[...]';
+            } catch (e) {}
+            
+            document.getElementById('previewTitle').textContent = f.name;
+            document.getElementById('previewContent').textContent = content;
+            document.getElementById('previewDownloadBtn').onclick = () => downloadFile(id);
+            document.getElementById('previewModal').classList.add('active');
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').classList.remove('active');
+        }
+
+        // ==================== admin ====================
+        function adminLogin() {
+            if (document.getElementById('adminPassInput').value === ADMIN_PASSWORD) {
+                isAdminLogged = true;
+                document.getElementById('adminLoginPanel').style.display = 'none';
+                document.getElementById('adminPanelContent').style.display = 'block';
+                updateUI();
+            } else {
+                alert('złe hasło');
+            }
+        }
+
+        function adminLogout() {
+            isAdminLogged = false;
+            document.getElementById('adminLoginPanel').style.display = 'block';
+            document.getElementById('adminPanelContent').style.display = 'none';
+        }
+
+        function selectDuration(days, el) {
+            selectedDuration = days;
+            document.querySelectorAll('.duration-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function generateLicense() {
+            let name = document.getElementById('licenseName').value || 'key';
+            let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let key = '';
+            for (let i=0; i<3; i++) {
+                for (let j=0; j<3; j++) key += chars[Math.floor(Math.random()*chars.length)];
+                if (i<2) key += '-';
+            }
+
+            let now = new Date();
+            let expires = new Date(now.setDate(now.getDate() + selectedDuration));
+            
+            licenses.push({
+                key: key,
+                name: name,
+                created: new Date().toISOString().split('T')[0],
+                expires: expires.toISOString().split('T')[0]
+            });
+            
+            saveData();
+            
+            let d = document.getElementById('generatedKeyDisplay');
+            d.textContent = `nowy: ${key}`;
+            d.style.display = 'block';
+            setTimeout(() => d.style.display = 'none', 3000);
+            
+            renderKeys();
+        }
+
+        function renderKeys() {
+            let list = document.getElementById('keyList');
+            if (!licenses.length) {
+                list.innerHTML = '<div style="color:#666;padding:20px;text-align:center">brak kluczy</div>';
+                return;
+            }
+
+            list.innerHTML = licenses.slice().reverse().map(l => `
+                <div class="key-item">
+                    <div>
+                        <span style="color:#fff">${l.key}</span>
+                        <span class="small"> ${l.name} | ${l.expires}</span>
+                    </div>
+                    <button class="small" onclick="deleteKey('${l.key}')">usuń</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteKey(key) {
+            if (confirm('usunąć?')) {
+                licenses = licenses.filter(l => l.key !== key);
+                saveData();
+                renderKeys();
+            }
+        }
+
+        // upload
+        const dropZone = document.getElementById('adminDropZone');
+        const fileInput = document.getElementById('adminFileInput');
+        const fileInfo = document.getElementById('adminFileInfo');
+        const uploadBtn = document.getElementById('uploadBtn');
+
+        if (dropZone) {
+            dropZone.addEventListener('dragover', (e) => e.preventDefault());
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (isAdminLogged) handleUpload(e.dataTransfer.files);
+            });
+        }
+
+        fileInput.addEventListener('change', () => {
+            if (isAdminLogged) handleUpload(fileInput.files);
+        });
+
+        function handleUpload(files) {
+            if (!files.length) return;
+            let file = files[0];
+            uploadedFile = file;
+            fileInfo.style.display = 'block';
+            fileInfo.textContent = `plik: ${file.name} (${(file.size/1024).toFixed(2)} KB)`;
+            uploadBtn.disabled = false;
+        }
+
+        async function uploadFile() {
+            if (!uploadedFile || !isAdminLogged) return;
+
+            let name = document.getElementById('fileName').value || uploadedFile.name;
+            let desc = document.getElementById('fileDesc').value || '';
+
+            let reader = new FileReader();
+            reader.onload = async (e) => {
+                files.unshift({
+                    id: Date.now().toString(),
+                    name: name,
+                    desc: desc,
+                    size: uploadedFile.size,
+                    date: new Date().toISOString(),
+                    data: e.target.result.split(',')[1]
+                });
+
+                await saveData();
+
+                document.getElementById('fileName').value = '';
+                document.getElementById('fileDesc').value = '';
+                fileInfo.style.display = 'none';
+                uploadBtn.disabled = true;
+                uploadedFile = null;
+
+                renderAdminFiles();
+                if (currentUserKey) renderFiles();
+            };
+            reader.readAsDataURL(uploadedFile);
+        }
+
+        function renderAdminFiles() {
+            let list = document.getElementById('adminFilesList');
+            if (!files.length) {
+                list.innerHTML = '<div style="color:#666;padding:30px;text-align:center">brak plików</div>';
+                return;
+            }
+
+            list.innerHTML = files.map(f => `
+                <div class="admin-file-item">
+                    <div>
+                        <div style="color:#fff">${f.name}</div>
+                        <div class="small">${new Date(f.date).toLocaleString('pl-PL')}</div>
+                    </div>
+                    <div style="display:flex;gap:8px">
+                        <button class="small" onclick="previewFile('${f.id}')">podgląd</button>
+                        <button class="small" onclick="deleteFile('${f.id}')">usuń</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteFile(id) {
+            if (confirm('usunąć?')) {
+                files = files.filter(f => f.id !== id);
+                saveData();
+                renderAdminFiles();
+                if (currentUserKey) renderFiles();
+            }
+        }
+
+        function showContact() {
+            alert('dc: krvl_keine');
+        }
+
+        function buyOffer(type) {
+            if (!currentUserKey) return alert('zaloguj się');
+            alert('kontakt: krvl_keine (dc)');
+        }
+
+        // enter
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('userKeyInput')?.addEventListener('keypress', e => {
+                if (e.key === 'Enter') userLogin();
+            });
+        });
+    </script>
+</body>
+  </html>
